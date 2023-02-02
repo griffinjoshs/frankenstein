@@ -18,17 +18,17 @@ class User extends DBObject
 
 		if ($pwMismatch)
 		{
-		    $this->error .= 'The passwords you entered do not match.<br>';
+		    $this->error .= 'The passwords you entered do not match.';
 		    $proceed = false;
 		}
 		if ($this->email == '')
 		{
-			$this->error .= 'You must enter an email address.<br>';
+			$this->error .= 'You must enter an email address.';
 			$proceed = false;
 		}
 		if ($this->firstname == '')
 		{
-			$this->error .= 'You must enter a first name.<br>';
+			$this->error .= 'You must enter a first name.';
 			$proceed = false;
 		}
 		if ($this->phone == '' && $this->mobile == '')
@@ -57,17 +57,17 @@ class User extends DBObject
 		return $proceed;
 	}
 
-	private function setPermissionId()
-	{
-		global $db;
-		$this->permissionId = $db->getValue("SELECT permissionId FROM users WHERE user_id={$this->id}");
-	}
-	public function updatePermissions($permId)
-	{
-		global $db;
-		$permId = ($permId==''?0:$permId);
-		$db->query("UPDATE users SET permissionId = {$permId} WHERE user_id={$this->id}");
-	}
+	// private function setPermissionId()
+	// {
+	// 	global $db;
+	// 	$this->permissionId = $db->getValue("SELECT permissionId FROM users WHERE user_id={$this->id}");
+	// }
+	// public function updatePermissions($permId)
+	// {
+	// 	global $db;
+	// 	$permId = ($permId==''?0:$permId);
+	// 	$db->query("UPDATE users SET permissionId = {$permId} WHERE user_id={$this->id}");
+	// }
 
 	static public function getUpperManagement($agencyId)
 	{
@@ -86,20 +86,7 @@ class User extends DBObject
 	    return $rows;
 	}
 
-	public function setExpiration($date='', $days='')
-	{
-		global $db;
-		if ($date == '' && $days == '')
-			$date = date('Y-m-d', mktime(0,0,0,date('m'),date('d')+EXPIRATION_TERM,date('Y')));
-		elseif ($date == '' && $days != '')
-			$date = date('Y-m-d', mktime(0,0,0,date('m'),date('d')+$days,date('Y')));
 
-		if ($this->id != '' && $date != '')
-		{
-			$db->query("UPDATE users SET expirationDate = '{$date}' WHERE user_id = {$this->id}");
-		}
-
-	}
 	public function updatetimezone($userId,$timezone)
 	{
 		global $db;
