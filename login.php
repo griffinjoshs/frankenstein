@@ -16,7 +16,7 @@
 
 <!-- Pills content -->
 <div class="tab-content">
-  <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+  <div id="login" class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
     <form>
       <!-- Email input -->
       <div class="form-outline mb-4">
@@ -55,7 +55,7 @@
       </div>
     </form>
   </div>
-  <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+  <div id="signup" class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
     <form>
       <div class="text-center mb-3">
         <p>Sign up with:</p>
