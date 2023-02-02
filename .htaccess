@@ -3,4 +3,3 @@ DirectoryIndex login.php
 RewriteEngine On
 RewriteRule index.php login.php [L]
 
-s
