@@ -1,7 +1,7 @@
 <?php include("header.php");
 
 
-if(isset($_POST)){
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
   showArray($_POST);
 }
 
@@ -27,13 +27,13 @@ if(isset($_POST)){
     <form>
       <!-- Email input -->
       <div class="form-outline mb-4">
-        <input type="email" id="loginName" class="form-control" />
+        <input type="email" id="loginName" class="form-control" name='loginName'/>
         <label class="form-label" for="loginName">Email or username</label>
       </div>
 
       <!-- Password input -->
       <div class="form-outline mb-4">
-        <input type="password" id="loginPassword" class="form-control" />
+        <input type="password" id="loginPassword" class="form-control" name='loginPassword' />
         <label class="form-label" for="loginPassword">Password</label>
       </div>
 
@@ -42,7 +42,7 @@ if(isset($_POST)){
         <div class="col-md-6 d-flex justify-content-center">
           <!-- Checkbox -->
           <div class="form-check mb-3 mb-md-0">
-            <input class="form-check-input" type="checkbox" value="" id="loginCheck" checked />
+            <input class="form-check-input" type="checkbox" value="" id="loginCheck" name='loginCheck' checked />
             <label class="form-check-label" for="loginCheck"> Remember me </label>
           </div>
         </div>
@@ -68,37 +68,37 @@ if(isset($_POST)){
     <form action='/login.php' method='POST'>
       <!-- Name input -->
       <div class="form-outline mb-4">
-        <input type="text" id="registerName" class="form-control" />
+        <input type="text" id="registerName" class="form-control" name='registerName'/>
         <label class="form-label" for="registerName">Name</label>
       </div>
 
       <!-- Username input -->
       <div class="form-outline mb-4">
-        <input type="text" id="registerUsername" class="form-control" />
+        <input type="text" id="registerUsername" class="form-control" name='registerUsername'/>
         <label class="form-label" for="registerUsername">Username</label>
       </div>
 
       <!-- Email input -->
       <div class="form-outline mb-4">
-        <input type="email" id="registerEmail" class="form-control" />
+        <input type="email" id="registerEmail" class="form-control" name='registerEmail'/>
         <label class="form-label" for="registerEmail">Email</label>
       </div>
 
       <!-- Password input -->
       <div class="form-outline mb-4">
-        <input type="password" id="registerPassword" class="form-control" />
+        <input type="password" id="registerPassword" class="form-control" name='registerPassword'/>
         <label class="form-label" for="registerPassword">Password</label>
       </div>
 
       <!-- Repeat Password input -->
       <div class="form-outline mb-4">
-        <input type="password" id="registerRepeatPassword" class="form-control" />
+        <input type="password" id="registerRepeatPassword" class="form-control" name='registerRepeatPassword'/>
         <label class="form-label" for="registerRepeatPassword">Repeat password</label>
       </div>
 
       <!-- Checkbox -->
       <div class="form-check d-flex justify-content-center mb-4">
-        <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" checked
+        <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" name='registerCheck' checked
           aria-describedby="registerCheckHelpText" />
         <label class="form-check-label" for="registerCheck">
           I have read and agree to the terms
