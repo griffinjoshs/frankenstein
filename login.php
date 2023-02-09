@@ -3,6 +3,8 @@
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
   showArray($_POST);
+} else {
+  error_log("Form data was not posted");
 }
 
 ?>
@@ -24,7 +26,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 <!-- Pills content -->
 <div class="tab-content">
   <div id="login" class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-    <form>
+    <form action='/login.php' method='POST'> 
       <!-- Email input -->
       <div class="form-outline mb-4">
         <input type="email" id="loginName" class="form-control" name='loginName'/>
