@@ -1,3 +1,6 @@
+<?php 
+include('includes/inc.functions.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>

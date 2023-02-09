@@ -1,4 +1,11 @@
-<?php include("header.php");?>
+<?php include("header.php");
+
+
+if(isset($_POST)){
+  showArray($_POST);
+}
+
+?>
 
 <div class="login-container container">
    <!-- Pills navs -->
@@ -58,7 +65,7 @@
 
 
   <div id="register" class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
-    <form>
+    <form action='/login.php' method='POST'>
       <!-- Name input -->
       <div class="form-outline mb-4">
         <input type="text" id="registerName" class="form-control" />
