@@ -51,33 +51,14 @@
 
       <!-- Register buttons -->
       <div class="text-center">
-        <p>Not a member? <a href="#!">Register</a></p>
+        <p>Not a member? <a href="#!" id='registerLink'>Register</a></p>
       </div>
     </form>
   </div>
-  <div id="signup" class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+
+
+  <div id="register" class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
     <form>
-      <div class="text-center mb-3">
-        <p>Sign up with:</p>
-        <button type="button" class="btn btn-link btn-floating mx-1">
-          <i class="fab fa-facebook-f"></i>
-        </button>
-
-        <button type="button" class="btn btn-link btn-floating mx-1">
-          <i class="fab fa-google"></i>
-        </button>
-
-        <button type="button" class="btn btn-link btn-floating mx-1">
-          <i class="fab fa-twitter"></i>
-        </button>
-
-        <button type="button" class="btn btn-link btn-floating mx-1">
-          <i class="fab fa-github"></i>
-        </button>
-      </div>
-
-      <p class="text-center">or:</p>
-
       <!-- Name input -->
       <div class="form-outline mb-4">
         <input type="text" id="registerName" class="form-control" />
