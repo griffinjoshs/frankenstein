@@ -1,4 +1,4 @@
-<?
+<?php
 class User extends DBObject
 {
 	public $error;
@@ -14,46 +14,46 @@ class User extends DBObject
 		$proceed = true;
 
 
-		$this->email = trim($this->email);
+		// $this->email = trim($this->email);
 
-		if ($pwMismatch)
-		{
-		    $this->error .= 'The passwords you entered do not match.';
-		    $proceed = false;
-		}
-		if ($this->email == '')
-		{
-			$this->error .= 'You must enter an email address.';
-			$proceed = false;
-		}
-		if ($this->firstname == '')
-		{
-			$this->error .= 'You must enter a first name.';
-			$proceed = false;
-		}
-		if ($this->phone == '' && $this->mobile == '')
-		{
-		//	$this->error .= 'You must enter a valid phone number.<br>';
-		//	$proceed = false;
-		}
-		if ($this->password == '')
-		{
-			if ($this->id > 0)
-			{
-				$this->password = $db->getValue("SELECT password FROM users WHERE user_id={$this->id}");
-			}
-			else
-			{
-				$this->error .= 'A password is required to create an account.<br>';
-				$proceed = false;
-			}
+		// if ($pwMismatch)
+		// {
+		//     $this->error .= 'The passwords you entered do not match.';
+		//     $proceed = false;
+		// }
+		// if ($this->email == '')
+		// {
+		// 	$this->error .= 'You must enter an email address.';
+		// 	$proceed = false;
+		// }
+		// if ($this->firstname == '')
+		// {
+		// 	$this->error .= 'You must enter a first name.';
+		// 	$proceed = false;
+		// }
+		// if ($this->phone == '' && $this->mobile == '')
+		// {
+		// //	$this->error .= 'You must enter a valid phone number.<br>';
+		// //	$proceed = false;
+		// }
+		// if ($this->password == '')
+		// {
+		// 	if ($this->id > 0)
+		// 	{
+		// 		$this->password = $db->getValue("SELECT password FROM users WHERE user_id={$this->id}");
+		// 	}
+		// 	else
+		// 	{
+		// 		$this->error .= 'A password is required to create an account.<br>';
+		// 		$proceed = false;
+		// 	}
 
-		}
-		if ($this->usernameExists())
-		{
-			$this->error .= 'The email address you entered is already in use.<br>';
-			$proceed = false;
-		}
+		// }
+		// if ($this->usernameExists())
+		// {
+		// 	$this->error .= 'The email address you entered is already in use.<br>';
+		// 	$proceed = false;
+		// }
 		return $proceed;
 	}
 
@@ -69,170 +69,109 @@ class User extends DBObject
 	// 	$db->query("UPDATE users SET permissionId = {$permId} WHERE user_id={$this->id}");
 	// }
 
-	static public function getUpperManagement($agencyId)
-	{
-	    global $db;
-
-	    $sql = "SELECT user_id as userId, firstname, lastname, email, phone, mobile FROM users WHERE status = 1 AND permissionId = 6 AND plantId = " . (int)$agencyId;
-
-	    $rows = $db->getRows($sql);
-	    return $rows;
-	}
-
 	public function getUserById($userId) {
 		global $db;
-		$sql = "SELECT user_id as userId, firstname, lastname, email, phone, mobile FROM users WHERE status = 1 AND rowStatus = 1 AND user_id = " . (int)$userId;
+		$sql = "SELECT u.user_id as userId, u.firstname, u.lastname, u.email, u.phone, u.mobile FROM users u
+
+		WHERE u.status = 1 AND u.rowStatus = 1 AND u.user_id = " . (int)$userId;
 		$rows = $db->getRows($sql);
 	    return $rows;
 	}
 
 
-	public function updatetimezone($userId,$timezone)
-	{
-		global $db;
-		$sql =  "UPDATE users SET timezone = ". $timezone."  where  user_id= ".$userId;
-		$db->query($sql);
-		return true;
-	}
-	static function setNavigationDirection($userId) {
-		global $db;
-		
-		if ($userId > 0)
-		{
-		    if (isset($_SESSION['menuDirection']) && $_SESSION['menuDirection'] != '')
-		    {
-		        return $_SESSION['menuDirection'];
-		    }
-		    else 
-		    {
-        		$sql = "SELECT menuDirection FROM users WHERE user_id = ".$userId;
-        		$menuDirection = $db->getRows($sql);
-        		if($menuDirection[0] == "") {
-        			$menuDirection[0] = "Left";
-        		}
-        		
-        		if ($menuDirection[0]['menuDirection'] == '')
-        		    $menuDirection[0]['menuDirection'] = 'Left';
-        		
-    		    $_SESSION['menuDirection'] = $menuDirection[0]['menuDirection'];
-    		//    showArray($menuDirection[0]);
-    		    return $menuDirection[0]['menuDirection'];
-		    }
-		}
-	}
-	static function login($uname, $pw)
-	{
-		
-		global $db, $_SESSION;
+	// public function updatetimezone($userId,$timezone)
+	// {
+	// 	global $db;
+	// 	$sql =  "UPDATE users SET timezone = ". $timezone."  where  user_id= ".$userId;
+	// 	$db->query($sql);
+	// 	return true;
+	// }
 
-		$pw = md5($pw);
-		$uname = addslashes(strtoupper(trim($uname)));
-		if (trim($uname) != '' && trim($pw) != '')
+
+	static function login($username, $password)
+	{
+		global $db, $_SESSION;
+		// sanitize username
+		$username = addslashes(strtoupper(trim($username)));
+		// hash password
+		$hashPass = md5($password);
+		// showArray($username);
+		// showArray($hashPass);
+		if (trim($username) != '' && trim($password) != '')
 		{
-		    $sql = "SELECT u.*, tm.plants, tm.teams, tz.tz, tz.tzOffset
-                    FROM users u
-                    LEFT JOIN timezone tz ON tz.id = u.timezone
-                    LEFT JOIN
-                    (
-                        SELECT GROUP_CONCAT(DISTINCT plantId) as plants, GROUP_CONCAT(DISTINCT teamId) as teams, userId
-                        FROM team_member tm
-                        LEFT JOIN team t ON t.id = tm.teamId
-                        WHERE rowStatus=1
-                        AND status = 1
-                        GROUP BY tm.userId
-                    ) tm ON tm.userId = u.user_id
-						  WHERE status = 1 AND UPPER(username) = '{$uname}' AND password = '{$pw}'";
-		    $user = $db->getRows($sql);
+			$sql = "SELECT u.id, u.userId, u.email, u.username, u.password, u.firstname, u.lastname, u.permissionId, u.timezone as userTimezone, tz.tz, tz.tzOffset FROM users u
+			LEFT JOIN timezone tz ON tz.id = u.timezone
+			WHERE u.status = 1 AND UPPER(u.username) = '" . $username . "' AND UPPER(u.password) = '" . $hashPass . "'";
 			// showArray($sql);
+			$user = $db->getRows($sql);
 			// showArray($user);
+		} 
+		else
+		{
+			$error = 'Your ';
+			if(trim($username) == ' && $password == ')
+			{ $error .= 'username and password are '; }
+			elseif($username == '')
+			{ $error .= 'username is '; }
+			elseif($password == '')
+			{ $error .= 'password is '; }
+			$error .= 'missing. Please try again.'; 
+			return $error;
+			// return false;
 		}
 		if (count($user) == 1)
 		{
-
-			if ($user[0]['expirationDate'] != '0000-00-00 00:00:00' && date('U') >= date('U', strtotime($user[0]['expirationDate'])))
-			{
-				return $user[0]['expirationDate'];
+			// showArray($user);
+			if($user[0]['userTimezone'] == '') {
+				$user[0]['userTimezone'] = ($_POST['timezone'] != '' ? $_POST['timezone'] : "Not Available");
 			}
-			else
-			{
-			    $plants = $user[0]['plants'];
-			    $plants = explode(',', $plants);
-			    
-			    $plants = array_unique($plants);
-			    $plants = implode(',', $plants);
-			    
-			    $teams = $user[0]['teams'];
-			    $teams = explode(',', $teams);
-			    
-			    $teams = array_unique($teams);
-			    $teams = implode(',', $teams);
-			    
-				if (isset($user[0]['plantId']) && (int)$user[0]['plantId'] > 0)
-				{
-					$sql = "SELECT d.document as softwareLogo, dl.document as documentLogo, companyAbbreviation, restricted
-							FROM company c
-							LEFT JOIN document d ON d.id = c.logoId
-							LEFT JOIN document dl ON dl.id = c.documentLogoId
-							WHERE c.id = " . $user[0]['plantId'];
-
-					$company = $db->getRows($sql);
-
-					if (isset($company[0]['softwareLogo']) && file_exists($company[0]['softwareLogo']))
-					{
-						$_SESSION['company_logo'] = $company[0]['softwareLogo'];
-						$_SESSION['softwareLogo'] = $company[0]['softwareLogo'];
-					}
-
-					if (isset($company[0]['documentLogo']) && file_exists($company[0]['documentLogo']))
-						$_SESSION['documentLogo'] = $company[0]['documentLogo'];
-					$_SESSION['plantAbbrev'] = $company[0]['companyAbbreviation'];
-				}
-
-				$_SESSION['user_id'] = $user[0]['user_id'];
-				$_SESSION['user_companyId'] = $user[0]['userCompanyId'];
-				$_SESSION['user_firstName'] = $user[0]['firstname'];
-				$_SESSION['user_lastName'] = $user[0]['lastname'];
-				$_SESSION['user_email'] = $user[0]['email'];
-				$_SESSION['user_plantId'] = $user[0]['plantId'];
-				$_SESSION['user_usePlantId'] = $user[0]['plantId'];
-				$_SESSION['timezone'] = $user[0]['timezone'];
-				$_SESSION['tz'] = $user[0]['tz'];
-				$_SESSION['tzOffset'] = $user[0]['tzOffset'];
+			// showArray($user, "success user: ");
+			$_SESSION['user_id'] = $user[0]['userId'];
+			$_SESSION['user_firstName'] = $user[0]['firstname'];
+			$_SESSION['user_lastName'] = $user[0]['lastname'];
+			$_SESSION['user_email'] = $user[0]['email'];
+			// $_SESSION['timezone'] = $user[0]['timezone'];
+			$_SESSION['userTimezone'] = $user[0]['userTimezone'];
+			$_SESSION['tzOffset'] = $user[0]['tzOffset'];
 				
-				$_SESSION['user_plants'] = $plants;
-				$_SESSION['user_teams'] = $teams;
-				$_SESSION['restricted'] = ($company[0]['restricted']==1?true:false);
-
-				$_SESSION['filterOwn'] = $user[0]['filterOwn'];
-
-				//Not sure how "Admin" got changed to Management, but I have to deal with it now...
-				$_SESSION['is_management'] = ($user[0]['permissionId']==1?true:false);
-				$_SESSION['is_admin'] = ($user[0]['permissionId']==1?true:false);
-				$_SESSION['is_super_admin'] = ($user[0]['permissionId']==7?true:false);
-				$_SESSION['is_upper_mgmt'] = ($user[0]['permissionId']==6?true:false);
-				$_SESSION['is_employee'] = ($user[0]['permissionId']==2 || $user[0]['permissionId']==8?true:false);
-				$_SESSION['is_agency'] = ($user[0]['permissionId']==3?true:false);
-				$_SESSION['is_client'] = ($user[0]['permissionId']==4?true:false);
-				$_SESSION['is_contractor'] = ($user[0]['permissionId']==5?true:false);
-				$_SESSION['is_read_only'] = ($user[0]['permissionId']==8?true:false);
-				if ($user[0]['permissionId']==1)
-					$_SESSION['admin_id'] = $user[0]['user_id'];
-
-				$te = new GoogleCloud();
-				$_SESSION['googleBucketName'] = $te->bucketName;
-				$_SESSION['msg'] = "";
-
-				return true;
+			if ($user[0]['permissionId']==1)
+			{
+				$_SESSION['admin_id'] = $user[0]['userId'];
+				$_SESSION['is_super_admin'] = true;
 			}
-		} else {
-			return false;
+
+			$ip = $_SERVER['REMOTE_ADDR'];
+			$details = json_decode(file_get_contents("http://ipinfo.io/{$ip}/json"));
+
+			// TODO: this is causing an issue when i try and save. this mighjt
+			// be an over all save issue. need to investigate
+			// $td = explode(',',$details->loc);
+			// $details->latitude = $td[0];
+			// $details->longitude = $td[1];
+			// $details->email = $_POST['username'];
+			// $details->datetime = date('Y-m-d H:i:s');
+			// $details->userId = $_SESSION['user_id'];
+			// $details->timezone = $_POST['timezone'];
+
+			// $login = new Login();
+			// $login->postvars((array)$details);
+			// $login->save();
+			return true;
+		
 		}
+		else
+		{
+			$error = "This username and password combination does not exist. Please try again.";
+			return $error; 
+			// return false;
+		}
+		exit;
 	}
 
-	public function logout()
+	static function logout()
 	{
 		session_destroy();
-		redirect('/?p=');
+		redirect('login.php');
 	}
 
 	function usernameExists()
